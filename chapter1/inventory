@@ -1,0 +1,4 @@
+[ec2instances]
+13.233.132.127 ansible_ssh_private_key_file=/Users/sureshperumal/Downloads/awsudemypractice.pem
+13.233.41.115 ansible_ssh_private_key_file=/Users/sureshperumal/Downloads/udemyec2instancepractice2.pem
+13.234.225.68 ansible_ssh_private_key_file=/Users/sureshperumal/Downloads/udemyec2instancepractice2.pem

@@ -1,0 +1,2 @@
+[ec2instances]
+13.233.215.108 ansible_ssh_private_key_file=udemyec2instancepractice2.pem

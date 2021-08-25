@@ -1,0 +1,4 @@
+url: https://mirrors.estointernet.in/apache/lucene/solr/8.9.0/solr-8.9.0-src.tgz
+version: 8.9.0
+download_dir: /tmp
+solr_dir: /opt/solr

@@ -1,0 +1,73 @@
+- name: solr
+  hosts: ec2instances
+  become: true
+
+  vars_files:
+    - "variables.yml"
+
+  pre_tasks:
+    - name: update apt and clear cache memory
+      yum:
+        update_cache: true
+      
+  tasks:
+    - name: download Java
+      get_url: 
+        url: https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz
+        dest: "{{ download_dir }}"
+      
+    - name: unarchive Java
+      unarchive:
+        src: "{{ download_dir }}/openjdk-11.0.1_linux-x64_bin.tar.gz"
+        dest: "{{ download_dir }}/jdk-11.0.1"
+        remote_src: true
+        creates: "{{ download_dir }}/jdk-11.0.1/README.txt"
+    
+    - name: copy the required files
+      become: true
+      copy:
+        src: "{{ download_dir }}/jdk-11.0.1"
+        dest: /usr/local/ 
+        owner: root
+        group: root
+        mode: 0644
+        remote_src: true
+    # - name: "command {{ item }}"
+    #   command : "{{ item }} arg1"
+    #   with_items: 
+    #     - export JAVA_HOME=/usr/local/jdk-11.0.1
+    #     - export PATH=$PATH:$JAVA_HOME/bin
+    #     - source /etc/profile.d/jdk11.sh
+    #   args:
+    #     remote_src: true
+      
+    - name: download solr
+      get_url:
+        url: "{{ url }}"
+        dest: "{{ download_dir }}/solr-{{ version }}.tgz"
+    
+    - name: extract solr
+      unarchive:
+        src: "{{ download_dir }}/solr-{{ version }}.tgz"
+        dest: "{{ download_dir }}"
+        remote_src: true
+        creates: "{{ download_dir }}/solr-{{ version }}/README.txt"
+      
+    - name: install solr
+      command: >
+        {{ download_dir }}/solr-{{ version }}/bin/install_solr_service.sh
+        {{ download_dir }}/solr-{{ version }}.tgz
+        -i /opt
+        -d /var/solr
+        -u solr
+        -s solr
+        -p 8983
+        creates={{ solr_dir }}/bin/solr
+    - name: Ensure solr is started and enabled on boot.
+      service: 
+        name: solr 
+        state: started 
+        enabled: yes
+
+
+
