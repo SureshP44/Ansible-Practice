@@ -1,0 +1,31 @@
+---
+- name: handlers
+  hosts: redHat
+  become: true
+
+  handlers:
+    - name: restart apache
+      service:
+        name: apache2
+        state: restarted
+
+
+  tasks:
+    - name: Install apache.
+      package:
+        name: apache2
+        state: present
+    
+    - name: run the apache.
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+    
+    - name: copy the html file.
+      copy:
+        src: basic.html
+        dest: /var/www/html/index.html
+      notify: restart apache
+
+

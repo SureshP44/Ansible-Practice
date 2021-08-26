@@ -1,0 +1,4 @@
+---
+ubuntu:
+  package_name: apache2
+  file_path: /var/www/html/index.html
