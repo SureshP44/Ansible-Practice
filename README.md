@@ -1,5 +1,5 @@
-# ansible-firstplaybook
-Lab session of the chapter 1 - 3 from Jeff Greeling book
+"free -m" - to get free space in the instances
+"Df -h”  - to get disk usage in of the instances.
 
 
 Ansible
@@ -114,6 +114,55 @@ If some actions need root user privilege, we can give that directly in play by s
 If we need to run the playbook on specific group or specific ip, we can do that by using limit command.
 
 Ansible-playbook -i instances -b --limit=<group name / ip address> -b playbook.yml
+
+HANDLERS
+
+This is a kind of task that we can use like helper functions in other languages. Say, we have a task to make changes to the apache server. If the changes is happened we need to restart it, in those cases we can make use of handlers,
+
+For example:
+
+    Handlers:
+   - Name: handler_name
+      Services:
+    //actions
+  
+    Tasks:
+      - Name: copy
+        Copy:
+        Src: file/path
+        Dest: file/path
+        Notify:
+        Handler_name
+
+We can use as many handlers we need in the notify, 
+    Notify
+        - handler 1
+        - handler 2  
+
+To run the handler immediately after the notify we need to use meta data to flush the handlers:
+Flush make sure that, if there is any handlers on queue, it will execute that, then it will execute the rest.
+
+For Example
+    Handlers:
+   - Name: handler_name
+      Services:
+    //actions
+  
+    Tasks:
+      - Name: copy
+        Copy:
+        Src: file/path
+        Dest: file/path
+        Notify:
+        Handler_name
+  - Name: flush_the_path
+     Meta: flush_handlers
+
+In some cases, if there is handlers in queue to execute, but due to one of the upcoming tasks fail, it wont execute the handler, to overcome this, we have to use --force-handlers in the cmd line
+
+For example: 
+    > ansible-playbook -i inventory <play_bookfile.yml> --force-handlers.
+
 
 
 
